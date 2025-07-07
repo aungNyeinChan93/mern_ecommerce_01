@@ -1,9 +1,12 @@
 import React from "react";
+import Collections from "../components/other/Collections";
 
 const CollectionPage = () => {
   return (
     <React.Fragment>
-      <section></section>
+      <section>
+        <Collections />
+      </section>
     </React.Fragment>
   );
 };

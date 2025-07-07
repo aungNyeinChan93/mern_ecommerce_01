@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Outlet } from "react-router";
 import SecondaryNavbar from "./layouts/Header/SecondaryNavbar";
 import { ThemeContext } from "./contexts/Theme/ThemeContext";
+import MasterFooter from "./layouts/Footer/MasterFooter";
 
 const App = () => {
   const { themeState } = useContext(ThemeContext);
@@ -13,12 +14,13 @@ const App = () => {
         <main
           className={
             themeState.theme === "dark"
-              ? "!bg-slate-900/92 w-full min-h-screen"
-              : "!bg-slate-100 w-full min-h-screen"
+              ? "!bg-slate-900/92 w-full min-h-screen py-2"
+              : "!bg-slate-100 w-full min-h-screen py-2"
           }
         >
           <Outlet />
         </main>
+        <MasterFooter />
       </section>
     </React.Fragment>
   );
