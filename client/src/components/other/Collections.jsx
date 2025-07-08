@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ProductCard from "../../features/product/components/ProductCard";
+import CollectionCard from "./CollectionCard";
 
 const Collections = () => {
   const [showFilter, setShowFilter] = useState(true);
@@ -10,6 +11,10 @@ const Collections = () => {
 
   const [categoryList, setCategoryList] = useState([]);
   const [subCategoryList, setSubCategory] = useState([]);
+
+  const [sortType, setSortType] = useState();
+
+  const [search, setSearch] = useState("");
 
   const fiterCategory = (e) => {
     if (categoryList.includes(e.target.value)) {
@@ -27,8 +32,14 @@ const Collections = () => {
     }
   };
 
+  // filter case
   const applyFilter = () => {
     let productsCopy = products && [...products];
+    if (search.length > 0) {
+      productsCopy = productsCopy.filter((p) =>
+        p.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
     if (categoryList.length > 0) {
       productsCopy = productsCopy.filter((p) =>
         categoryList.includes(p.category)
@@ -39,16 +50,35 @@ const Collections = () => {
         subCategoryList.includes(p.subCategory)
       );
     }
+
     setFilterProducts(productsCopy);
   };
 
-  useEffect(() => {
-    setFilterProducts(products);
-  }, [products]);
+  // sort case
+  const sorting = () => {
+    let sortProducts = [...products];
+    switch (sortType) {
+      case "DESC":
+        setFilterProducts(sortProducts.sort((a, b) => b.price - a.price));
+        break;
+
+      case "ASC":
+        setFilterProducts(sortProducts.sort((a, b) => a.price - b.price));
+        break;
+
+      default:
+        applyFilter();
+        break;
+    }
+  };
 
   useEffect(() => {
     applyFilter();
-  }, [categoryList, subCategoryList]);
+  }, [categoryList, subCategoryList, search]);
+
+  useEffect(() => {
+    sorting();
+  }, [sortType]);
 
   return (
     <React.Fragment>
@@ -70,9 +100,11 @@ const Collections = () => {
               {/* Search Section */}
               <div className="flex px-3 py-1.5 rounded-md border border-gray-300 bg-gray-100 overflow-hidden my-2">
                 <input
-                  type="email"
+                  type="text"
                   placeholder="Search Products"
                   className="w-full bg-transparent outline-none text-gray-900 text-sm"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                 />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -360,13 +392,15 @@ const Collections = () => {
                   {filterPorducts && filterPorducts.length}
                 </span>
               </h1>{" "}
+              {/* sorting */}
               <div>
                 <select
                   name="orderBy"
                   className="border border-green-500 px-4 py-2 text-gray-500 rounded"
+                  onChange={(e) => setSortType(e.target.value)}
                 >
-                  <option value="DESC">DESC</option>
-                  <option value="ASC">ASC</option>
+                  <option value="DESC">DESC BY PRICE</option>
+                  <option value="ASC">ASC BY PRICE</option>
                 </select>
               </div>
             </div>
@@ -374,7 +408,7 @@ const Collections = () => {
               {filterPorducts &&
                 Array.isArray(filterPorducts) &&
                 filterPorducts?.map((p) => {
-                  return <ProductCard key={p._id} {...p} />;
+                  return <CollectionCard key={p._id} {...p} />;
                 })}
             </div>
           </div>

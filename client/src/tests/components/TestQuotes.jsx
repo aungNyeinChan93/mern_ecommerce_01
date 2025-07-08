@@ -9,10 +9,10 @@ const TestQuotes = () => {
 
   useEffect(() => {
     getQuotes();
-  });
+  }, []);
   const [quotes, setQuotes] = useState([]);
 
-  console.log(quotes);
+  // console.log(quotes);
 
   return (
     <React.Fragment>
